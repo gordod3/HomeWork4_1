@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.widget.Button;
 
 import com.example.homework4_1.models.Task;
+import com.example.homework4_1.ui.onBoard.OnBoardActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -28,6 +29,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!getIntent().getBooleanExtra("true", false)){
+            startActivity(new Intent(this, OnBoardActivity.class));
+            finish();
+            return;
+        }
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
