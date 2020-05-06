@@ -38,6 +38,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         return list.size();
     }
 
+    public void newTask(Task task){
+        list.add(task);
+        notifyDataSetChanged();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView title;
         public ViewHolder(@NonNull View itemView) {

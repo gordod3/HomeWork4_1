@@ -38,8 +38,6 @@ public class MainActivity extends AppCompatActivity {
             finish();
             return;
         }
-        FragmentManager manager = getSupportFragmentManager();
-
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -61,7 +59,8 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-        homeFragment = (HomeFragment) manager.findFragmentById(R.id.nav_host_fragment);
+
+
     }
 
     @Override
@@ -84,8 +83,14 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 1 && resultCode == RESULT_OK){
             Task task = (Task) data.getSerializableExtra("task");
             Log.d("task", task.getTitle() + " " + task.getDesc());
-            homeFragment.adapter.list.add(task);
-            homeFragment.adapter.notify();
+//            FragmentManager manager = getSupportFragmentManager();
+//            HomeFragment homeFragment = (HomeFragment) manager.findFragmentById(R.id.nav_home);
+            if (homeFragment != null) {
+                homeFragment.adapter.newTask(task);
+            }
         }
+    }
+    public void fishingHomeFragment(HomeFragment homeFragmentFish){
+        homeFragment = homeFragmentFish;
     }
 }

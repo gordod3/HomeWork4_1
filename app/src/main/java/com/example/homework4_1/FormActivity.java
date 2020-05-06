@@ -34,13 +34,15 @@ public class FormActivity extends AppCompatActivity {
     }
 
     public void onClick(View view) {
-        Intent intent = new Intent();
-        String
-                title = editTitle.getText().toString().trim(),
-                desc = editDesc.getText().toString().trim();
-        Task task = new Task(title, desc);
-        intent.putExtra("task", task);
-        setResult(RESULT_OK, intent);
-        finish();
+        if ((editTitle != null || editTitle.getText().toString().trim() != "") && (editDesc != null || editDesc.getText().toString().trim() != "")) {
+            Intent intent = new Intent();
+            String
+                    title = editTitle.getText().toString().trim(),
+                    desc = editDesc.getText().toString().trim();
+            Task task = new Task(title, desc);
+            intent.putExtra("task", task);
+            setResult(RESULT_OK, intent);
+            finish();
+        }
     }
 }

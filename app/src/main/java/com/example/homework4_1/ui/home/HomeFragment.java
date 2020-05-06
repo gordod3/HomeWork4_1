@@ -1,6 +1,7 @@
 package com.example.homework4_1.ui.home;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.homework4_1.MainActivity;
 import com.example.homework4_1.R;
 import com.example.homework4_1.models.Task;
 
@@ -35,5 +37,7 @@ public class HomeFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new TaskAdapter(list);
         recyclerView.setAdapter(adapter);
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.fishingHomeFragment(this);
     }
 }

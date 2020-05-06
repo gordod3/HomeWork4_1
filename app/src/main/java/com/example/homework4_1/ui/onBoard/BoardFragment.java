@@ -52,19 +52,18 @@ public class BoardFragment extends Fragment {
         switch (pos){
             case 0:
                 image.setImageResource(R.drawable.ic_menu_camera);
-                textTitle.setText("Привет");
-                textDes.setText("Как дела?");
-                board.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                textTitle.setText("Добро пожаловать в \"*название*\"!");
+                textDes.setText("");
                 break;
             case 1:
                 image.setImageResource(R.drawable.ic_menu_send);
-                textTitle.setText("Хорошо");
-                textDes.setText("У меня хорошо");
+                textTitle.setText("");
+                textDes.setText("XXX");
                 break;
             case 2:
                 image.setImageResource(R.drawable.ic_launcher_background);
-                textTitle.setText("Пока");
-                textDes.setText("До свиданье");
+                textTitle.setText("XXX");
+                textDes.setText("XXX");
                 button.setVisibility(View.VISIBLE);
                 break;
         }
