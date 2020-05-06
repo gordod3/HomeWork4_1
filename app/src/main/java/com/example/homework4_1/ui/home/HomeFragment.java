@@ -20,7 +20,7 @@ import com.example.homework4_1.models.Task;
 import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
-    private TaskAdapter adapter;
+    public TaskAdapter adapter;
     private ArrayList<Task> list = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,

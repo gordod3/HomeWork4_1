@@ -8,12 +8,16 @@ import android.view.Menu;
 import android.widget.Button;
 
 import com.example.homework4_1.models.Task;
+import com.example.homework4_1.ui.home.HomeFragment;
 import com.example.homework4_1.ui.onBoard.OnBoardActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -23,8 +27,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity {
-
     private AppBarConfiguration mAppBarConfiguration;
+    private HomeFragment homeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
             finish();
             return;
         }
+        FragmentManager manager = getSupportFragmentManager();
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -76,7 +82,9 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == RESULT_OK){
             Task task = (Task) data.getSerializableExtra("task");
-            Log.d("getSeri", task.getDesc() + " and " + task.getTitle());
+            Log.d("task", task.getTitle() + " " + task.getDesc());
+            homeFragment.adapter.list.add(task);
+            homeFragment.adapter.notify();
         }
     }
 }

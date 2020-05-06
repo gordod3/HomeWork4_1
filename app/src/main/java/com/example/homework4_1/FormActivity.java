@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -39,7 +40,7 @@ public class FormActivity extends AppCompatActivity {
                 desc = editDesc.getText().toString().trim();
         Task task = new Task(title, desc);
         intent.putExtra("task", task);
-        setResult(RESULT_OK);
+        setResult(RESULT_OK, intent);
         finish();
     }
 }

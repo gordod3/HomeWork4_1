@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.homework4_1.MainActivity;
@@ -33,6 +34,7 @@ public class BoardFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        final LinearLayout board = view.findViewById(R.id.fragment_board);
         final Button button = view.findViewById(R.id.pager_button_start);
         final OnBoardActivity onBoardActivity = (OnBoardActivity) getActivity();
         TextView textTitle = view.findViewById(R.id.pager_text_title), textDes = view.findViewById(R.id.pager_text_des);
@@ -52,6 +54,7 @@ public class BoardFragment extends Fragment {
                 image.setImageResource(R.drawable.ic_menu_camera);
                 textTitle.setText("Привет");
                 textDes.setText("Как дела?");
+                board.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                 break;
             case 1:
                 image.setImageResource(R.drawable.ic_menu_send);
