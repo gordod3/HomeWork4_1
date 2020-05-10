@@ -8,7 +8,9 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -34,14 +36,15 @@ public class OnBoardActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(OnBoardActivity.this, MainActivity.class);
-                intent.putExtra("true", true);
-                startActivity(intent);
+                SharedPreferences preferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
+                preferences.edit().putBoolean("isShown", true).apply();
+                startActivity(new Intent(OnBoardActivity.this, MainActivity.class));
                 finish();
             }
         });
     }
     public class SectionsPagerAdapter extends FragmentPagerAdapter{
+
         public SectionsPagerAdapter(@NonNull FragmentManager fm) {
             super(fm, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         }

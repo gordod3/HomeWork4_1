@@ -1,11 +1,17 @@
 package com.example.homework4_1;
 
+import android.content.ClipData;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.example.homework4_1.models.Task;
 import com.example.homework4_1.ui.home.HomeFragment;
@@ -26,14 +32,21 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.util.zip.Inflater;
+
 public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private HomeFragment homeFragment;
 
+    private boolean isShown(){
+        SharedPreferences preferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
+        return preferences.getBoolean("isShown", false);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!getIntent().getBooleanExtra("true", false)){
+        if (!isShown()){
             startActivity(new Intent(this, OnBoardActivity.class));
             finish();
             return;
@@ -50,6 +63,16 @@ public class MainActivity extends AppCompatActivity {
         });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
+//        navigationView.removeHeaderView(navigationView.getHeaderView(0));
+//        View view = LayoutInflater.from(getBaseContext()).inflate(R.layout.nav_header_main, null, false);
+//        navigationView.addHeaderView(view);
+
+        navigationView.getHeaderView(0).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+            }
+        });
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -67,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+//        menu.findItem(R.id.action_exit).setOnMenuItemClickListener();
         return true;
     }
 
@@ -92,5 +116,17 @@ public class MainActivity extends AppCompatActivity {
     }
     public void fishingHomeFragment(HomeFragment homeFragmentFish){
         homeFragment = homeFragmentFish;
+    }
+
+    public void ItemClick(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_exit:
+                SharedPreferences preferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
+                preferences.edit().putBoolean("isShown", false).apply();
+                finish();
+                break;
+            case R.id.action_settings:
+                break;
+        }
     }
 }

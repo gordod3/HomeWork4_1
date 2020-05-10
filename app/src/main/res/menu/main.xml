@@ -9,6 +9,7 @@
     <item
         android:id="@+id/action_exit"
         android:orderInCategory="100"
+        android:onClick="ItemClick"
         android:title="@string/action_exit"
         app:showAsAction="never" />
 </menu>
