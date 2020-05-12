@@ -36,7 +36,6 @@ import java.util.zip.Inflater;
 
 public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
-    private HomeFragment homeFragment;
 
     private boolean isShown(){
         SharedPreferences preferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
@@ -58,14 +57,11 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent( MainActivity.this, FormActivity.class), 1);
+                startActivity(new Intent( MainActivity.this, FormActivity.class));
             }
         });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-//        navigationView.removeHeaderView(navigationView.getHeaderView(0));
-//        View view = LayoutInflater.from(getBaseContext()).inflate(R.layout.nav_header_main, null, false);
-//        navigationView.addHeaderView(view);
 
         navigationView.getHeaderView(0).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,8 +69,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, ProfileActivity.class));
             }
         });
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
                 .setDrawerLayout(drawer)
@@ -82,15 +76,11 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-//        menu.findItem(R.id.action_exit).setOnMenuItemClickListener();
         return true;
     }
 
@@ -99,23 +89,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK){
-            Task task = (Task) data.getSerializableExtra("task");
-            Log.d("task", task.getTitle() + " " + task.getDesc());
-//            FragmentManager manager = getSupportFragmentManager();
-//            HomeFragment homeFragment = (HomeFragment) manager.findFragmentById(R.id.nav_home);
-            if (homeFragment != null) {
-                homeFragment.adapter.newTask(task);
-            }
-        }
-    }
-    public void fishingHomeFragment(HomeFragment homeFragmentFish){
-        homeFragment = homeFragmentFish;
     }
 
     public void ItemClick(MenuItem item) {

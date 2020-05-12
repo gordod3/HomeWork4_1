@@ -23,11 +23,11 @@ public class FormActivity extends AppCompatActivity {
         setContentView(R.layout.activity_form);
         editTitle = findViewById(R.id.form_editTitle);
         editDesc = findViewById(R.id.form_editDesc);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);//а какой у него id?
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {//Плохо понял для чего он возращает boolean
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         setResult(RESULT_CANCELED);
         finish();
         return true;
@@ -35,13 +35,11 @@ public class FormActivity extends AppCompatActivity {
 
     public void onClick(View view) {
         if ((editTitle != null || editTitle.getText().toString().trim() != "") && (editDesc != null || editDesc.getText().toString().trim() != "")) {
-            Intent intent = new Intent();
             String
                     title = editTitle.getText().toString().trim(),
                     desc = editDesc.getText().toString().trim();
             Task task = new Task(title, desc);
-            intent.putExtra("task", task);
-            setResult(RESULT_OK, intent);
+            App.getInstance().getDatabase().taskDao().insert(task);
             finish();
         }
     }

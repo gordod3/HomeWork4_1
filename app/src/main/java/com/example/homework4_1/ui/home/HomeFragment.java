@@ -15,15 +15,19 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.homework4_1.App;
 import com.example.homework4_1.MainActivity;
+import com.example.homework4_1.OnItemClickListener;
 import com.example.homework4_1.R;
 import com.example.homework4_1.models.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class HomeFragment extends Fragment {
     public TaskAdapter adapter;
-    private ArrayList<Task> list = new ArrayList<>();
+    private List<Task> list = new ArrayList<>();
+    public OnItemClickListener listener;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -35,9 +39,22 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new TaskAdapter(list);
+        list.addAll(App.getInstance().getDatabase().taskDao().getAll());
+        adapter = new TaskAdapter(list, getResources(), listener);
         recyclerView.setAdapter(adapter);
         MainActivity mainActivity = (MainActivity) getActivity();
-        mainActivity.fishingHomeFragment(this);
+        loadData();
+
+    }
+
+    private void loadData() {
+        App.getInstance().getDatabase().taskDao().getAllive().observe(this, new Observer<List<Task>>() {
+            @Override
+            public void onChanged(List<Task> tasks) {
+                list.clear();
+                list.addAll(tasks);
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 }
