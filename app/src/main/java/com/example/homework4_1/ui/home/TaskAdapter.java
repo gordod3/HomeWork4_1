@@ -1,5 +1,6 @@
 package com.example.homework4_1.ui.home;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.homework4_1.App;
+import com.example.homework4_1.FireMissilesDialogFragment;
+import com.example.homework4_1.MainActivity;
 import com.example.homework4_1.OnItemClickListener;
 import com.example.homework4_1.R;
 import com.example.homework4_1.models.Task;
@@ -23,10 +26,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     private OnItemClickListener onItemClickListener;
     public List<Task> list;
     private Resources res;
-    public TaskAdapter(List<Task> list, Resources res, OnItemClickListener listener){
+    private MainActivity mainActivity;
+    private FireMissilesDialogFragment dialogFragment;
+    public TaskAdapter(List<Task> list, Resources res, OnItemClickListener listener, FireMissilesDialogFragment dialogFragment, MainActivity mainActivity){
         this.list = list;
         this.res = res;
         onItemClickListener = listener;
+        this.dialogFragment = dialogFragment;
+        this.mainActivity = mainActivity;
     }
     @NonNull
     @Override
@@ -40,7 +47,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.bind(list.get(position));
         holder.position = position;
-        if ((position+1)%2 == 0) holder.linearLayout.setBackgroundColor(res.getColor(R.color.colorGrey));// Баг!
+        if ((position+1)%2 == 0) holder.linearLayout.setBackgroundColor(res.getColor(R.color.colorGrey));
+        else holder.linearLayout.setBackgroundColor(res.getColor(R.color.colorWhite));
     }
 
     @Override
@@ -59,8 +67,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    Log.d("Lol", position + "");
-                    App.getInstance().getDatabase().taskDao().delete(list.get(position));
+                    dialogFragment.show(mainActivity.getSupportFragmentManager(), null);
+                    //App.getInstance().getDatabase().taskDao().delete(list.get(position));
                     return true;
                 }
             });

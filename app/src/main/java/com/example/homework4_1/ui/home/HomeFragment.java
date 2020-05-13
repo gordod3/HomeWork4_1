@@ -1,5 +1,6 @@
 package com.example.homework4_1.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.homework4_1.App;
+import com.example.homework4_1.FireMissilesDialogFragment;
+import com.example.homework4_1.FormActivity;
 import com.example.homework4_1.MainActivity;
 import com.example.homework4_1.OnItemClickListener;
 import com.example.homework4_1.R;
@@ -24,10 +27,10 @@ import com.example.homework4_1.models.Task;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements OnItemClickListener {
     public TaskAdapter adapter;
     private List<Task> list = new ArrayList<>();
-    public OnItemClickListener listener;
+    //public OnItemClickListener listener;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -40,9 +43,9 @@ public class HomeFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         list.addAll(App.getInstance().getDatabase().taskDao().getAll());
-        adapter = new TaskAdapter(list, getResources(), listener);
+        FireMissilesDialogFragment dialogFragment = new FireMissilesDialogFragment();
+        adapter = new TaskAdapter(list, getResources(), this, dialogFragment, (MainActivity) getActivity());
         recyclerView.setAdapter(adapter);
-        MainActivity mainActivity = (MainActivity) getActivity();
         loadData();
 
     }
@@ -56,5 +59,12 @@ public class HomeFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             }
         });
+    }
+
+    @Override
+    public void onItemClick(int pos) {
+        Intent intent = new Intent(getContext(), FormActivity.class);
+        intent.putExtra("task", list.get(pos));
+        getActivity().startActivity(intent);
     }
 }

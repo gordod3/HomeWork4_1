@@ -16,6 +16,7 @@ import java.io.Serializable;
 
 public class FormActivity extends AppCompatActivity {
     private EditText editTitle, editDesc;
+    private Task task;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +25,11 @@ public class FormActivity extends AppCompatActivity {
         editTitle = findViewById(R.id.form_editTitle);
         editDesc = findViewById(R.id.form_editDesc);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        try {
+            task = (Task)getIntent().getSerializableExtra("task");
+            editTitle.setText(task.getTitle());
+            editDesc.setText(task.getDesc());
+        }catch (Exception e){}
     }
 
     @Override
@@ -35,6 +41,9 @@ public class FormActivity extends AppCompatActivity {
 
     public void onClick(View view) {
         if ((editTitle != null || editTitle.getText().toString().trim() != "") && (editDesc != null || editDesc.getText().toString().trim() != "")) {
+            try {
+                App.getInstance().getDatabase().taskDao().delete(task);
+            }catch (Exception e){}
             String
                     title = editTitle.getText().toString().trim(),
                     desc = editDesc.getText().toString().trim();
