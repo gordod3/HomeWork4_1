@@ -16,7 +16,8 @@ import java.io.Serializable;
 
 public class FormActivity extends AppCompatActivity {
     private EditText editTitle, editDesc;
-    private Task task;
+    private Task editTask;
+    private int pos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,9 +27,11 @@ public class FormActivity extends AppCompatActivity {
         editDesc = findViewById(R.id.form_editDesc);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         try {
-            task = (Task)getIntent().getSerializableExtra("task");
-            editTitle.setText(task.getTitle());
-            editDesc.setText(task.getDesc());
+            Intent intent = getIntent();
+            editTask = (Task)intent.getSerializableExtra("task");
+            editTitle.setText(editTask.getTitle());
+            editDesc.setText(editTask.getDesc());
+            pos = intent.getIntExtra("pos", 0);
         }catch (Exception e){}
     }
 
@@ -41,14 +44,16 @@ public class FormActivity extends AppCompatActivity {
 
     public void onClick(View view) {
         if ((editTitle != null || editTitle.getText().toString().trim() != "") && (editDesc != null || editDesc.getText().toString().trim() != "")) {
-            try {
-                App.getInstance().getDatabase().taskDao().delete(task);
-            }catch (Exception e){}
             String
                     title = editTitle.getText().toString().trim(),
                     desc = editDesc.getText().toString().trim();
             Task task = new Task(title, desc);
-            App.getInstance().getDatabase().taskDao().insert(task);
+            if (editTask != null){
+                    task.setId(editTask.getId());
+                    App.getInstance().getDatabase().taskDao().update(task);
+            } else {
+                App.getInstance().getDatabase().taskDao().insert(task);
+            }
             finish();
         }
     }

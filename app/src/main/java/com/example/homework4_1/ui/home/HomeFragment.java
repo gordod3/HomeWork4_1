@@ -65,6 +65,7 @@ public class HomeFragment extends Fragment implements OnItemClickListener, Notic
     public void onItemClick(int pos) {
         Intent intent = new Intent(getContext(), FormActivity.class);
         intent.putExtra("task", list.get(pos));
+        intent.putExtra("pos", pos);
         getActivity().startActivity(intent);
     }
 
