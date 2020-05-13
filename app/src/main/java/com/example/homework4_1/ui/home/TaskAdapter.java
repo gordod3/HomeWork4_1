@@ -1,8 +1,6 @@
 package com.example.homework4_1.ui.home;
 
-import android.content.Intent;
 import android.content.res.Resources;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +10,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.homework4_1.App;
-import com.example.homework4_1.FireMissilesDialogFragment;
+import com.example.homework4_1.dialogAlert.FireMissilesDialogFragment;
 import com.example.homework4_1.MainActivity;
 import com.example.homework4_1.OnItemClickListener;
 import com.example.homework4_1.R;
 import com.example.homework4_1.models.Task;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
@@ -28,6 +24,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     private Resources res;
     private MainActivity mainActivity;
     private FireMissilesDialogFragment dialogFragment;
+    public int position;
     public TaskAdapter(List<Task> list, Resources res, OnItemClickListener listener, FireMissilesDialogFragment dialogFragment, MainActivity mainActivity){
         this.list = list;
         this.res = res;
@@ -46,7 +43,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.bind(list.get(position));
-        holder.position = position;
         if ((position+1)%2 == 0) holder.linearLayout.setBackgroundColor(res.getColor(R.color.colorGrey));
         else holder.linearLayout.setBackgroundColor(res.getColor(R.color.colorWhite));
     }
@@ -57,7 +53,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private int position;
         private TextView title;
         private LinearLayout linearLayout;
         public ViewHolder(@NonNull View itemView) {
@@ -67,8 +62,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
+                    position = getAdapterPosition();
                     dialogFragment.show(mainActivity.getSupportFragmentManager(), null);
-                    //App.getInstance().getDatabase().taskDao().delete(list.get(position));
                     return true;
                 }
             });
