@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -13,14 +12,9 @@ import android.widget.EditText;
 import com.example.homework4_1.models.Task;
 import com.example.homework4_1.room.TaskDao;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 public class FormActivity extends AppCompatActivity {
     private EditText editTitle, editDesc;
     private Task editTask;
-    private String e = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,12 +23,12 @@ public class FormActivity extends AppCompatActivity {
         editTitle = findViewById(R.id.form_editTitle);
         editDesc = findViewById(R.id.form_editDesc);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        try {
-            Intent intent = getIntent();
-            editTask = (Task)intent.getSerializableExtra("task");
+        Intent intent = getIntent();
+        editTask = (Task)intent.getSerializableExtra("task");
+        if (editTask != null){
             editTitle.setText(editTask.getTitle());
             editDesc.setText(editTask.getDesc());
-        }catch (Exception e){}
+        }
     }
 
     @Override
@@ -51,7 +45,6 @@ public class FormActivity extends AppCompatActivity {
                     desc = editDesc.getText().toString().trim();
             Task task = new Task(title, desc);
             TaskDao taskDao = App.getInstance().getDatabase().taskDao();
-            List<Task> tasks = taskDao.getAll();
             if (editTask != null) {
                 task.setId(editTask.getId());
                 taskDao.update(task);

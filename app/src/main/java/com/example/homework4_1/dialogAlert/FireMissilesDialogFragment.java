@@ -24,10 +24,7 @@ public class FireMissilesDialogFragment extends DialogFragment {
                     }
                 })
                 .setNegativeButton("Нет", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        listener.onDialogNegativeClick();
-                    }
-                });
+                    public void onClick(DialogInterface dialog, int id) {}});
         return builder.create();
     }
 }
