@@ -14,7 +14,6 @@
     </androidx.viewpager.widget.ViewPager>
 
     <com.google.android.material.tabs.TabLayout
-        android:background="#E7000000"
         android:id="@+id/activity_onBoard_tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -1,30 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/fragment_board"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:padding="32dp"
+    android:background="@drawable/gradient_view_pager_3"
     tools:context=".ui.onBoard.BoardFragment">
 
-    <ImageView
-        android:id="@+id/pager_imageView_title"
-        android:layout_width="282dp"
-        android:layout_height="348dp"
-        android:src="@mipmap/ic_launcher" />
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/pager_lottie_title"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        app:lottie_loop="true"
+        app:lottie_autoPlay="true"
+         />
 
     <TextView
         android:id="@+id/pager_text_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:gravity="center"
         android:text="dsadsadasd"
-        android:textSize="44sp" />
+        android:textSize="33sp" />
 
     <TextView
         android:id="@+id/pager_text_des"
+        android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/hello_blank_fragment"
@@ -34,8 +40,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Начать"
+        android:background="@drawable/button_view_pager"
         android:visibility="invisible"
-        android:textSize="44sp"
+        android:textSize="33sp"
         android:layout_margin="16dp"/>
 
 </LinearLayout>

@@ -44,7 +44,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.bind(list.get(position));
         if ((position+1)%2 == 0) holder.linearLayout.setBackgroundColor(res.getColor(R.color.colorGrey));
-        else holder.linearLayout.setBackgroundColor(res.getColor(R.color.colorWhite));
+        else holder.linearLayout.setBackgroundColor(res.getColor(R.color.colorDefault));
     }
 
     @Override

@@ -13,10 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.homework4_1.MainActivity;
 import com.example.homework4_1.R;
 
@@ -45,7 +45,7 @@ public class BoardFragment extends Fragment {
         final LinearLayout board = view.findViewById(R.id.fragment_board);
         final Button button = view.findViewById(R.id.pager_button_start);
         TextView textTitle = view.findViewById(R.id.pager_text_title), textDes = view.findViewById(R.id.pager_text_des);
-        final ImageView image = view.findViewById(R.id.pager_imageView_title);
+        final LottieAnimationView lottie = view.findViewById(R.id.pager_lottie_title);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,23 +57,22 @@ public class BoardFragment extends Fragment {
         int pos = getArguments().getInt("pos");
         switch (pos){
             case 0:
-                image.setImageResource(R.drawable.ic_menu_camera);
-                textTitle.setText("Добро пожаловать в \"*название*\"!");
-                textDes.setText("");
-                board.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                lottie.setAnimation(R.raw.animation_view_pager1);
+                textTitle.setText("Добро пожаловать в \"Приложени\"!");
+                textDes.setText("Здесь вы можете делать все что захотите.");
+                board.setBackgroundColor(getResources().getColor(R.color.colorWhite));
                 break;
             case 1:
-                image.setImageResource(R.drawable.ic_menu_send);
-                textTitle.setText("");
-                textDes.setText("XXX");
+                lottie.setAnimation(R.raw.animation_view_pager2);
+                textTitle.setText("Общайтесь!");
+                textDes.setText("Вы можете переписываться со своими друзьями.");
                 board.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 break;
             case 2:
-                image.setImageResource(R.drawable.ic_launcher_background);
-                textTitle.setText("XXX");
-                textDes.setText("XXX");
+                lottie.setAnimation(R.raw.animation_view_pager3);
+                textTitle.setText("Начинайте сейчас!");
+                textDes.setText("Нажмите начать чтобы авторизоваться по номеру телефона:");
                 button.setVisibility(View.VISIBLE);
-                board.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 break;
         }
     }
