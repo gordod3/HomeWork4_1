@@ -29,6 +29,7 @@ import java.util.ArrayList;
 
 public class GalleryFragment extends Fragment {
     ArrayList<String> fileNames;
+    RecyclerView recyclerView;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -41,16 +42,16 @@ public class GalleryFragment extends Fragment {
         for(File file:folder.listFiles()){
             fileNames.add(file.getName());
         }
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        GalleryAdapter adapter = new GalleryAdapter(fileNames);
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        recyclerView = view.findViewById(R.id.recyclerView_gallery);
         getPermissions();
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerView_gallery);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        GalleryAdapter adapter = new GalleryAdapter(fileNames);
-        recyclerView.setAdapter(adapter);
     }
 
     private void getPermissions() {

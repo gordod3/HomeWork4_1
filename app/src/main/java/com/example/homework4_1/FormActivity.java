@@ -11,13 +11,16 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.example.homework4_1.models.Task;
+import com.example.homework4_1.room.TaskDao;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FormActivity extends AppCompatActivity {
     private EditText editTitle, editDesc;
     private Task editTask;
-    private int pos;
+    private String e = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +34,6 @@ public class FormActivity extends AppCompatActivity {
             editTask = (Task)intent.getSerializableExtra("task");
             editTitle.setText(editTask.getTitle());
             editDesc.setText(editTask.getDesc());
-            pos = intent.getIntExtra("pos", 0);
         }catch (Exception e){}
     }
 
@@ -43,16 +45,18 @@ public class FormActivity extends AppCompatActivity {
     }
 
     public void onClick(View view) {
-        if ((editTitle != null || editTitle.getText().toString().trim() != "") && (editDesc != null || editDesc.getText().toString().trim() != "")) {
+        if (!editTitle.getText().toString().isEmpty()) {
             String
                     title = editTitle.getText().toString().trim(),
                     desc = editDesc.getText().toString().trim();
             Task task = new Task(title, desc);
-            if (editTask != null){
-                    task.setId(editTask.getId());
-                    App.getInstance().getDatabase().taskDao().update(task);
+            TaskDao taskDao = App.getInstance().getDatabase().taskDao();
+            List<Task> tasks = taskDao.getAll();
+            if (editTask != null) {
+                task.setId(editTask.getId());
+                taskDao.update(task);
             } else {
-                App.getInstance().getDatabase().taskDao().insert(task);
+                taskDao.insert(task);
             }
             finish();
         }

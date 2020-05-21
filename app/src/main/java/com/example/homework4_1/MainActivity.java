@@ -4,12 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+
+import com.example.homework4_1.phone.PhoneActivity;
+import com.example.homework4_1.ui.home.HomeFragment;
 import com.example.homework4_1.ui.onBoard.OnBoardActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -19,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
+    private HomeFragment homeFragment;
 
     private boolean isShown(){
         SharedPreferences preferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
@@ -32,6 +39,10 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, OnBoardActivity.class));
             finish();
             return;
+        }
+        if (FirebaseAuth.getInstance().getCurrentUser() == null){
+            startActivity(new Intent(this, PhoneActivity.class));
+            finish();
         }
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -83,6 +94,15 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.action_settings:
                 break;
+            case R.id.action_sort:
+                homeFragment.isSorted = !homeFragment.isSorted;
+                homeFragment.loadData();
+                break;
+
         }
+    }
+
+    public void FishingHomeFragment(HomeFragment homeFragment){
+        this.homeFragment = homeFragment;
     }
 }

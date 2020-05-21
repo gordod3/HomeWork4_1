@@ -15,7 +15,7 @@ import com.example.homework4_1.R;
 
 public class NoticeDialogFragment extends DialogFragment {
     public interface NoticeDialogListener {
-        public void onDialogPositiveClick();
-        public void onDialogNegativeClick();
+        void onDialogPositiveClick();
+        void onDialogNegativeClick();
     }
 }
