@@ -58,7 +58,7 @@ public class BoardFragment extends Fragment {
         switch (pos){
             case 0:
                 lottie.setAnimation(R.raw.animation_view_pager1);
-                textTitle.setText("Добро пожаловать в \"Приложени\"!");
+                textTitle.setText("Добро пожаловать в \"Приложение\"!");
                 textDes.setText("Здесь вы можете делать все что захотите.");
                 board.setBackgroundColor(getResources().getColor(R.color.colorWhite));
                 break;
