@@ -22,4 +22,9 @@
         android:name="com.example.homework4_1.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
+    <fragment
+        android:id="@+id/nav_firestore"
+        android:name="com.example.homework4_1.ui.firestore.FirestoreFragment"
+        android:label="@string/menu_firestore"
+        tools:layout="@layout/fragment_firestore" />
 </navigation>

@@ -8,9 +8,17 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.homework4_1.models.Task;
+import com.example.homework4_1.models.User;
 import com.example.homework4_1.room.TaskDao;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class FormActivity extends AppCompatActivity {
     private EditText editTitle, editDesc;
@@ -50,6 +58,15 @@ public class FormActivity extends AppCompatActivity {
                 taskDao.update(task);
             } else {
                 taskDao.insert(task);
+                FirebaseFirestore.getInstance().collection("data")
+                        .document(FirebaseAuth.getInstance().getUid()).set(task)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
+                                if (task.isSuccessful()) Toast.makeText(FormActivity.this, "Успешно", Toast.LENGTH_SHORT).show();
+                                else Toast.makeText(FormActivity.this, "Успешно", Toast.LENGTH_SHORT).show();
+                            }
+                        });
             }
             finish();
         }
