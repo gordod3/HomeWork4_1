@@ -3,47 +3,50 @@ package com.example.homework4_1;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.homework4_1.models.User;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity {
     EditText editText;
     String uID = FirebaseAuth.getInstance().getUid();
-    ImageView avatar;
+    ImageView avatarImage;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         editText = findViewById(R.id.profile_editText);
-        avatar = findViewById(R.id.profile_avatar);
-        avatar.setOnClickListener(new View.OnClickListener() {
+        avatarImage = findViewById(R.id.profile_avatar);
+        progressBar = findViewById(R.id.profile_progressBar);
+        progressBar.setVisibility(View.GONE );
+        avatarImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
@@ -61,10 +64,17 @@ public class ProfileActivity extends AppCompatActivity {
                 if (documentSnapshot.exists()){
                     User user = documentSnapshot.toObject(User.class);
                     editText.setText(user.getName());
+                    showImage(user.getAvatar());
                 }
             }
         });
     }
+
+    private void showImage(String avatar) {
+        //Glide.with(this).load(avatar).circleCrop().into(avatarImage);
+        Glide.with(this).load(uID).circleCrop().into(avatarImage);
+    }
+
     private void getData() {
         FirebaseFirestore.getInstance().collection("users").document(uID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -79,8 +89,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void onClick(View view) {
         String name = editText.getText().toString().trim();
-        Map<String, Object> map = new HashMap<>();
-        map.put("name", "Aleksey");
         User user = new User(name, null, 1);
         FirebaseFirestore.getInstance().collection("users")
                 .document(uID).set(user)
@@ -96,18 +104,50 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch(requestCode) {
-            case 1:
+        if (requestCode == 1) {
                 if (resultCode == RESULT_OK) {
                     try {
                         final Uri imageUri = data.getData();
                         final InputStream imageStream = getContentResolver().openInputStream(imageUri);
                         final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                        avatar.setImageBitmap(selectedImage);
+                        avatarImage.setImageBitmap(selectedImage);
+                        upload(data.getData());
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
                 }
         }
+    }
+
+    private void upload(Uri data) {
+
+        final StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(uID + ".jpg");
+        UploadTask uploadTask = storageReference.putFile(data);
+        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                return storageReference.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()){
+                    Uri downloadUrl = task.getResult();
+                    Log.d("lol", downloadUrl + "");
+                    updateAvatarInfo(downloadUrl);
+                } else Toast.makeText(ProfileActivity.this, "Ошибка", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void updateAvatarInfo(Uri downloadUrl) {
+        FirebaseFirestore.getInstance().collection("users").document(uID)
+                .update("avatar", downloadUrl.toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) Toast.makeText(ProfileActivity.this, "Успешно", Toast.LENGTH_SHORT).show();
+                else Toast.makeText(ProfileActivity.this, "Ошибка", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

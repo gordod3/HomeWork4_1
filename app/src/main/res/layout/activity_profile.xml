@@ -19,12 +19,26 @@
         android:layout_height="wrap_content"
         android:hint="Введите имя"/>
 
-    <ImageView
-        android:layout_gravity="center"
-        android:id="@+id/profile_avatar"
+
+
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/ic_launcher"/>
+        android:layout_gravity="center">
+        <ImageView
+            android:background="@drawable/circle_black"
+            android:padding="24dp"
+            android:layout_gravity="center"
+            android:id="@+id/profile_avatar"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@mipmap/ic_launcher"/>
+        <ProgressBar
+            android:id="@+id/profile_progressBar"
+            android:layout_width="15dp"
+            android:layout_height="15dp"/>
+    </RelativeLayout>
+
 
 
 </LinearLayout>
