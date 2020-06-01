@@ -15,9 +15,12 @@ import com.example.homework4_1.models.User;
 import com.example.homework4_1.room.TaskDao;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FormActivity extends AppCompatActivity {
@@ -58,13 +61,17 @@ public class FormActivity extends AppCompatActivity {
                 taskDao.update(task);
             } else {
                 taskDao.insert(task);
+                Map<String , List<Task>> map = new HashMap<>();
+                List<Task> tasks = new ArrayList<>();
+                tasks.add(task);
+                map.put("task", tasks);
                 FirebaseFirestore.getInstance().collection("data")
-                        .document(FirebaseAuth.getInstance().getUid()).set(task)
+                        .document(FirebaseAuth.getInstance().getUid()).set(map)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
                                 if (task.isSuccessful()) Toast.makeText(FormActivity.this, "Успешно", Toast.LENGTH_SHORT).show();
-                                else Toast.makeText(FormActivity.this, "Успешно", Toast.LENGTH_SHORT).show();
+                                else Toast.makeText(FormActivity.this, "Ошибка", Toast.LENGTH_SHORT).show();
                             }
                         });
             }

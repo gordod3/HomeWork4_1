@@ -64,15 +64,16 @@ public class ProfileActivity extends AppCompatActivity {
                 if (documentSnapshot.exists()){
                     User user = documentSnapshot.toObject(User.class);
                     editText.setText(user.getName());
-                    showImage(user.getAvatar());
+                    if (user.getAvatar() != null) {
+                        showImage(user.getAvatar());
+                    }
                 }
             }
         });
     }
 
     private void showImage(String avatar) {
-        //Glide.with(this).load(avatar).circleCrop().into(avatarImage);
-        Glide.with(this).load(uID).circleCrop().into(avatarImage);
+        Glide.with(this).load(avatar).circleCrop().into(avatarImage);
     }
 
     private void getData() {
@@ -96,7 +97,10 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) Toast.makeText(ProfileActivity.this, "Успешно", Toast.LENGTH_SHORT).show();
-                else Toast.makeText(ProfileActivity.this, "Успешно", Toast.LENGTH_SHORT).show();
+                else {
+                    Toast.makeText(ProfileActivity.this, "Ошибка", Toast.LENGTH_SHORT).show();
+                    Log.d("lol", task.getException() + "");
+                }
             }
         });
     }
@@ -106,21 +110,14 @@ public class ProfileActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
                 if (resultCode == RESULT_OK) {
-                    try {
-                        final Uri imageUri = data.getData();
-                        final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                        final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                        avatarImage.setImageBitmap(selectedImage);
+                        Glide.with(this).load(data.getData()).circleCrop().into(avatarImage);
                         upload(data.getData());
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
                 }
         }
     }
 
     private void upload(Uri data) {
-
+        progressBar.setVisibility(View.VISIBLE);
         final StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(uID + ".jpg");
         UploadTask uploadTask = storageReference.putFile(data);
         uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -135,7 +132,10 @@ public class ProfileActivity extends AppCompatActivity {
                     Uri downloadUrl = task.getResult();
                     Log.d("lol", downloadUrl + "");
                     updateAvatarInfo(downloadUrl);
-                } else Toast.makeText(ProfileActivity.this, "Ошибка", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(ProfileActivity.this, "Ошибка", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                }
             }
         });
     }
@@ -147,6 +147,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) Toast.makeText(ProfileActivity.this, "Успешно", Toast.LENGTH_SHORT).show();
                 else Toast.makeText(ProfileActivity.this, "Ошибка", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
             }
         });
     }

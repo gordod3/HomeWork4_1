@@ -41,8 +41,8 @@ public class HomeFragment extends Fragment implements OnItemClickListener, Notic
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mainActivity = (MainActivity) getActivity();
-        mainActivity.FishingHomeFragment(this);
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+        mainActivity.FishingFragment(this);
+        RecyclerView recyclerView = view.findViewById(R.id.fragmentHome_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         list.addAll(App.getInstance().getDatabase().taskDao().getAll());
         dialogFragment = new FireMissilesDialogFragment(this);

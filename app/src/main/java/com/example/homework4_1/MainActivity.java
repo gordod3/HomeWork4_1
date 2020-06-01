@@ -8,14 +8,24 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.example.homework4_1.models.User;
 import com.example.homework4_1.phone.PhoneActivity;
 import com.example.homework4_1.ui.home.HomeFragment;
 import com.example.homework4_1.ui.onBoard.OnBoardActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -26,6 +36,8 @@ import androidx.appcompat.widget.Toolbar;
 public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private HomeFragment homeFragment;
+    private ImageView avatar;
+    private TextView name;
 
     private boolean isShown(){
         SharedPreferences preferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
@@ -60,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         navigationView.getHeaderView(0).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                startActivityForResult(new Intent(MainActivity.this, ProfileActivity.class), 1);
             }
         });
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -70,6 +82,28 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+        avatar = navigationView.getHeaderView(0).findViewById(R.id.header_imageView_avatar);
+        name = navigationView.getHeaderView(0).findViewById(R.id.header_textView_name);
+        loadData();
+    }
+
+    private void loadData() {
+        FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if (documentSnapshot.exists()){
+                    User user = documentSnapshot.toObject(User.class);
+                    if (user.getAvatar() != null && user.getName() != null) {
+                    name.setText(user.getName());
+                    showAvatar(user.getAvatar());
+                    }
+                }
+            }
+        });
+    }
+
+    private void showAvatar(String avatar) {
+        Glide.with(this).load(avatar).circleCrop().into(this.avatar);
     }
 
     @Override
@@ -102,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void FishingHomeFragment(HomeFragment homeFragment){
-        this.homeFragment = homeFragment;
+    public void FishingFragment(HomeFragment fragment){
+        this.homeFragment = fragment;
     }
 }
