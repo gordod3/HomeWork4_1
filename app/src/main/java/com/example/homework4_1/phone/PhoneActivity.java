@@ -41,7 +41,7 @@ public class PhoneActivity extends AppCompatActivity {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
                 authCredential = phoneAuthCredential;
-                signIn(authCredential.getSmsCode());
+                signInAlt(phoneAuthCredential);
             }
 
             @Override
@@ -56,6 +56,19 @@ public class PhoneActivity extends AppCompatActivity {
                 editCodeNumber.setVisibility(View.VISIBLE);
             }
         };
+    }
+
+    private void signInAlt(PhoneAuthCredential phoneAuthCredential) {
+        FirebaseAuth.getInstance().signInWithCredential(phoneAuthCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()){
+                    FirebaseUser user = task.getResult().getUser();
+                    startActivity(new Intent(PhoneActivity.this, MainActivity.class));
+                    finish();
+                }else Log.e("lol", task.getException().toString());
+            }
+        });
     }
 
     public void onClick(View view) {

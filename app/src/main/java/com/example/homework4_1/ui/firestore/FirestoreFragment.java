@@ -31,6 +31,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,18 +55,12 @@ public class FirestoreFragment extends Fragment implements OnItemClickListener, 
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById(R.id.fragmentFirestore_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        document.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        document.collection("task").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull com.google.android.gms.tasks.Task<DocumentSnapshot> task) {
+            public void onComplete(@NonNull com.google.android.gms.tasks.Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
-                    if (task.getResult().exists()) {
-                        HashMap map = (HashMap) task.getResult().getData();
-                        List<Task> t = (List<Task>) map.get("task");
-                        Log.d("lol", t.get(0).getTitle());
-                        list.addAll(t);
-//                        Log.d("lol", list.get(0).getTitle());
+                        list.addAll(task.getResult().toObjects(Task.class));
                         loadData();
-                    }
                 } else {
                     Toast.makeText(getContext(), "Ошибка", Toast.LENGTH_SHORT).show();
                     Log.e("lol", task.getException() + "");
@@ -78,14 +73,12 @@ public class FirestoreFragment extends Fragment implements OnItemClickListener, 
         dialogFragment = new FireMissilesDialogFragment(this);
         adapter = new TaskAdapter(list, getResources(), this, dialogFragment, (MainActivity) getActivity());
         recyclerView.setAdapter(adapter);
-        document.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        document.collection("task").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                if (documentSnapshot.exists()){
+            public void onEvent(@Nullable QuerySnapshot documentSnapshots, @Nullable FirebaseFirestoreException e) {
                     list.clear();
-                    list.addAll((List<Task>)documentSnapshot.get("task"));
+                    if (!documentSnapshots.toObjects(Task.class).isEmpty()) list.addAll((documentSnapshots.toObjects(Task.class)));
                     adapter.notifyDataSetChanged();
-                }
             }
         });
     }
@@ -99,7 +92,5 @@ public class FirestoreFragment extends Fragment implements OnItemClickListener, 
 
     @Override
     public void onDialogPositiveClick() {
-        list.remove(adapter.position);
-        document.update("task", list);
     }
 }

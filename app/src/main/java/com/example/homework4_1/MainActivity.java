@@ -10,20 +10,25 @@ import android.view.View;
 import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.homework4_1.models.User;
 import com.example.homework4_1.phone.PhoneActivity;
 import com.example.homework4_1.ui.home.HomeFragment;
 import com.example.homework4_1.ui.onBoard.OnBoardActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -35,6 +40,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
+    private DocumentReference document = FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getUid());
     private HomeFragment homeFragment;
     private ImageView avatar;
     private TextView name;
@@ -55,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         if (FirebaseAuth.getInstance().getCurrentUser() == null){
             startActivity(new Intent(this, PhoneActivity.class));
             finish();
+            return;
         }
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -84,22 +91,21 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
         avatar = navigationView.getHeaderView(0).findViewById(R.id.header_imageView_avatar);
         name = navigationView.getHeaderView(0).findViewById(R.id.header_textView_name);
-        loadData();
-    }
-
-    private void loadData() {
-        FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        document.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                if (documentSnapshot.exists()){
-                    User user = documentSnapshot.toObject(User.class);
-                    if (user.getAvatar() != null && user.getName() != null) {
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    User user = task.getResult().toObject(User.class);
                     name.setText(user.getName());
                     showAvatar(user.getAvatar());
-                    }
+                }else {
+                    Toast.makeText(MainActivity.this, "Ошибка", Toast.LENGTH_SHORT).show();
+                    Log.e("lol", task.getException().toString());
                 }
+
             }
         });
+
     }
 
     private void showAvatar(String avatar) {

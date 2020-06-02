@@ -36,6 +36,7 @@ public class ProfileActivity extends AppCompatActivity {
     EditText editText;
     String uID = FirebaseAuth.getInstance().getUid();
     ImageView avatarImage;
+    Uri downloadUrl;
     ProgressBar progressBar;
 
     @Override
@@ -75,6 +76,9 @@ public class ProfileActivity extends AppCompatActivity {
     private void showImage(String avatar) {
         Glide.with(this).load(avatar).circleCrop().into(avatarImage);
     }
+    private void showImage(Bitmap bitmap) {
+        Glide.with(this).load(bitmap).circleCrop().into(avatarImage);
+    }
 
     private void getData() {
         FirebaseFirestore.getInstance().collection("users").document(uID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -103,6 +107,7 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         });
+        updateAvatarInfo(downloadUrl);
     }
 
     @Override
@@ -110,13 +115,12 @@ public class ProfileActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
                 if (resultCode == RESULT_OK) {
-                        Glide.with(this).load(data.getData()).circleCrop().into(avatarImage);
                         upload(data.getData());
                 }
         }
     }
 
-    private void upload(Uri data) {
+    private void upload(final Uri data) {
         progressBar.setVisibility(View.VISIBLE);
         final StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(uID + ".jpg");
         UploadTask uploadTask = storageReference.putFile(data);
@@ -129,11 +133,17 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
                 if (task.isSuccessful()){
-                    Uri downloadUrl = task.getResult();
+                    downloadUrl = task.getResult();
                     Log.d("lol", downloadUrl + "");
-                    updateAvatarInfo(downloadUrl);
+                    try {
+                        InputStream imageStream = getContentResolver().openInputStream(data);
+                        Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                        showImage(selectedImage);
+                        progressBar.setVisibility(View.GONE);
+                    }catch (Exception e){}
                 } else {
-                    Toast.makeText(ProfileActivity.this, "Ошибка", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProfileActivity.this, "Ошибка!", Toast.LENGTH_SHORT).show();
+                    Log.d("lol", task.getException().toString());
                     progressBar.setVisibility(View.GONE);
                 }
             }

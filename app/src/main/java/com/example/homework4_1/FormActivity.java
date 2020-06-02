@@ -66,14 +66,13 @@ public class FormActivity extends AppCompatActivity {
                 tasks.add(task);
                 map.put("task", tasks);
                 FirebaseFirestore.getInstance().collection("data")
-                        .document(FirebaseAuth.getInstance().getUid()).set(map)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
-                                if (task.isSuccessful()) Toast.makeText(FormActivity.this, "Успешно", Toast.LENGTH_SHORT).show();
-                                else Toast.makeText(FormActivity.this, "Ошибка", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        .document(FirebaseAuth.getInstance().getUid()).collection("task").add(task).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull com.google.android.gms.tasks.Task<DocumentReference> task) {
+                        if (task.isSuccessful()) Toast.makeText(FormActivity.this, "Успешно", Toast.LENGTH_SHORT).show();
+                        else Toast.makeText(FormActivity.this, "Ошибка", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
             finish();
         }
